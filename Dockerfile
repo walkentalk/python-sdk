@@ -10,11 +10,12 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 RUN rm -rf /var/lib/apt/lists/*
 # build project
-ARG PROJECT=python-sdk
+ARG PROJECT=blocknative-sdk
 WORKDIR /workspaces/${PROJECT}
 
 COPY requirements.txt .
 COPY README.md .
+COPY bin bin/
 COPY blocknative blocknative/
 COPY tests tests/
 COPY setup.py .
@@ -23,6 +24,8 @@ RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN pip3 install --upgrade autopep8
 RUN python3 setup.py install
+
+RUN python3 bin/version_check.py ${PROJECT}
 
 ENV PYTHONPATH=.
 RUN python3 -m py_compile blocknative/*.py
